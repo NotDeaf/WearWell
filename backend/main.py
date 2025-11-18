@@ -18,13 +18,6 @@ app.register_blueprint(outfit_bp, url_prefix="/outfit")
 app.register_blueprint(photos_bp, url_prefix="/photos")
 app.register_blueprint(predict_bp, url_prefix="/predict")
 
-# Print all registered routes before running Flask
-with app.app_context():
-    print("Registered Routes:")
-    for rule in app.url_map.iter_rules():
-        print(f"{rule} -> {rule.endpoint}")
-
-if __name__ == "__main__":
-    app.run(debug=True, port=5001)
-
-
+@app.route("/")
+def home():
+    return {"status": "WearWell backend is running!"}

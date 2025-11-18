@@ -1,18 +1,23 @@
-# Base image
-FROM python:3.11-slim
+FROM python:3.11
 
-# Set working directory
 WORKDIR /app
 
-# Install dependencies
-COPY app/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender1 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy the app source code
-COPY app/ .
+# Copy backend code
+COPY . .
 
-# Expose port 8000 for FastAPI
-EXPOSE 8000
+# Install Python dependencies (from app/requirements.txt)
+RUN pip install --no-cache-dir -r app/requirements.txt
 
-# Run FastAPI app with uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+EXPOSE 5000
+
+# Run Flask app via Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]

@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  wearwell_api:
+    build: .
+    container_name: wearwell_api
+    restart: always
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    networks:
+      - wearwell-net
+
+networks:
+  wearwell-net:
+    driver: bridge
